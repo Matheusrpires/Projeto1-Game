@@ -1,0 +1,14 @@
+div { float: left}
+
+html {
+     cursor: none;
+}
+
+
+body {
+    background: url(/Jogo/img/dust2.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+  }
