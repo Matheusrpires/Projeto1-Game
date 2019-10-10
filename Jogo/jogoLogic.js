@@ -1,23 +1,35 @@
 let ponto = 0;
 let IntervarlId;
 let timer = 30;
+let ending = 30;
 let start = 1;
 let players = [];
 let player;
 let ranking = [];
+let imgFF = 0;
+let imgTT = 0;
+let imgTF = 0;
+let imgTG = 0;
+let numberGrenades = 0;
+// velocidade
+let quick = 2500;
+let enemiesNumber = 0;
 
 function randomImg() {
-    let img, img2, topx, lefty;
+    let img = 0;
+    let img2, topx, lefty;
     let num;
     let screenHeight, screenWidth;
 
     screenHeight = window.innerHeight;
     screenWidth = window.innerWidth;
 
-    img2 = document.getElementsByClassName('ball')
+    img2 = document.getElementsByClassName('ball');
 
     for (let i = 0; i < img2.length; i++) {
         num = Math.floor(Math.random() * 200);
+        // img2[i].classList.toggle('enemies');
+
         if (num > 90) {
             img2[i].style.height = num + 'px';
             img2[i].style.width = num + 'px';
@@ -30,10 +42,16 @@ function randomImg() {
     }
 }
 
-function pontos() {
+
+function pontos(ene) {
     let points;
     let finalPoints;
-    ponto++;
+
+    if (ene.classList[1] === 'enemies') {
+        ponto++;
+    }
+
+
     points = document.getElementsByClassName('points');
     finalPoints = document.getElementsByClassName('pointsR');
     points[0].innerText = `Pontos: ${ponto}`;
@@ -46,7 +64,10 @@ function getPlayerandPoints() {
         player: player,
         pontos: pontos
     });
-    localStorage.setItem('player', players);
+    localStorage.setItem(player, JSON.stringify({
+        player: player,
+        pontos: pontos
+    }));
 }
 
 function tiraPontos() {
@@ -62,29 +83,73 @@ function tiraPontos() {
 
 function sumir(img) {
 
+    let imgNow = document.getElementById('flashba');
+
+
+    if (img.id === 'ball6') {
+        end();
+    }
+    if (img.id === 'ball7') {
+        timer += 5;
+        ending += 5;
+    }
+    if (img.id === 'ball8') {
+        imgNow.classList.toggle('hidden');
+        imgNow.classList.toggle('visible');
+        setTimeout(function () {
+            imgNow.classList.toggle('visible');
+            imgNow.classList.toggle('hidden');
+        }, 2000);
+    }
+    if (img.id === 'ball9') {
+        img.style.width = '0px';
+        img.style.height = '0px';
+        // grenade();
+        numberGrenades += 1;
+        console.log('total de granadas',numberGrenades);
+
+    }
+
     img.style.width = '0px';
     img.style.height = '0px';
 
-    console.log('clicado');
-
+    enemiesNumber+=1;
+    console.log('inimigos',enemiesNumber);
 }
 
 
 function stopImages() {
     let img = document.getElementById('img');
     img.remove();
-    // endBoard();
+}
+
+function getPlayerStorage() {
+    let keys = Object.keys(localStorage);
+    let size = keys.length;
+
+    for (let i = 0; i < size; i += 1) {
+        ranking.push(JSON.parse(localStorage.getItem(keys[i])));
+    }
+    // console.log('values', ranking);
+
 }
 
 function endBoard() {
     let pontos = document.getElementById('pointsboard');
     pontos.remove();
-
-    ranking = localStorage.getItem('player');
-    console.log(ranking);
+    getPlayerStorage();
 
     let endPoints = document.getElementById('ranking');
-    endPoints.setAttribute('style', 'visibility:visible')
+    let father = endPoints.getElementsByTagName('h5')[0];
+
+    for (let i = 0; i < ranking.length; i += 1) {
+        let p = document.createElement('p');
+        let data = document.createTextNode(`Jogador: ${ranking[i].player}   -Pontos: ${ranking[i].pontos}`);
+        p.appendChild(data);
+        father.appendChild(p);
+    }
+
+    endPoints.setAttribute('style', 'visibility:visible');
 }
 
 function end() {
@@ -96,7 +161,6 @@ function end() {
 
 function times() {
     let time;
-    let ending = 30;
     time = document.getElementsByClassName('timer');
     IntervarlId = setInterval(() => {
         timer -= 1;
@@ -116,9 +180,88 @@ function starts() {
     main();
 }
 
-// window.addEventListener('click', function (e) {
-//     main();
-// })
+function checkBuff() {
+    let imgf = document.getElementsByClassName('ball');
+    console.log('flash', imgTF);
+    if (imgFF == 6) {
+        imgf[5].classList.toggle('friend');
+        setTimeout(function () { imgf[5].classList.toggle('friend'); }, 2000);
+        imgFF = 0;
+    } else if (imgTT == 7) {
+        imgf[6].classList.toggle('time');
+        setTimeout(function () { imgf[6].classList.toggle('time'); }, 1500);
+        imgTT = 0;
+    } else if (imgTF == 5) {
+        imgf[7].classList.toggle('flash');
+        setTimeout(function () { imgf[7].classList.toggle('flash'); }, 1500);
+        imgTF = 0;
+    } else if (imgTG == 4) {
+        imgf[8].classList.toggle('flash');
+        setTimeout(function () { imgf[8].classList.toggle('flash'); }, 2500);
+        imgTG = 0;
+    } else {
+        imgFF += 1;
+        imgTT += 1;
+        imgTF += 1;
+        imgTG += 1;
+    }
+}
+
+function timeout() {
+
+    switch (ponto) {
+        case 5:
+            quick = 1400;
+            break;
+        case 7:
+            quick = 1350;
+            break;
+        case 9:
+            quick = 1300;
+            break;
+        case 11:
+            quick = 1250;
+            break;
+
+    }
+
+
+    setTimeout(function () {
+        randomImg();
+        checkBuff();
+        timeout();
+        enemiesNumber = 0;
+        console.log('inimigos mortos',enemiesNumber);
+    }, quick);
+
+}
+
+function grenade() {
+
+    if (numberGrenades >= 1) {
+        numberGrenades -= 1;
+
+        let updatePlayer = 5 - enemiesNumber;
+
+        let enemiesImg = document.getElementsByClassName('enemies');
+
+        for (let i = 0; i < 5; i += 1) {
+            enemiesImg[i].style.width = '0px';
+            enemiesImg[i].style.height = '0px';
+        }
+
+        // console.log('ponto', ponto);
+        // console.log('update', updatePlayer);
+
+        ponto += updatePlayer;
+        // console.log('ponto', ponto);
+
+        enemiesNumber = 0;
+    }else{
+        console.log('sem granda');
+    }
+
+}
 
 // lembrar de mudar velocidade para mais rápido
 function main() {
@@ -128,17 +271,22 @@ function main() {
     let remove = document.getElementsByTagName('h1');
     remove[0].remove();
 
-
-    setInterval(function () { randomImg() }, 1500);
-
+    timeout();
     times();
 
     document.querySelectorAll('.ball').forEach(bal => {
         bal.addEventListener('click', function () {
             sumir(this);
-            pontos();
+            pontos(this);
+            if (imgTG == 4) {
+                enemiesNumber += 1;
+
+            }
+            // console.log(document.getElementsByClassName('enemies'))
         });
     })
+
+
 
     window.addEventListener('click', function (e) {
         if (document.getElementById('img').contains(e.target)) {
