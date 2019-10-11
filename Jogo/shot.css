@@ -29,7 +29,7 @@ body {
   .GetNames{
     background: white;
     width: 380px;
-    height: 200px;
+    height: 350px;
     border-radius: 5px;
     text-align: center;
     padding-top: 10px;
@@ -42,6 +42,7 @@ body {
   .buttonStart{
     margin-left: 50%;
     margin-top: 50%;
+    background: black;
   }
 
   .ranking{
@@ -49,7 +50,7 @@ body {
     background-color: white;
     text-align: center;
     width: 300px;
-    height: 200px;
+    height: 50%;
     border-radius: 5px;
     display: inline-block;
     /* margin-right: 20%;
@@ -61,7 +62,7 @@ body {
   }
 
   .enemies {
-    /* visibility: hidden; */
+    opacity: 0;
   }
 
   .friend{
@@ -99,6 +100,34 @@ body {
     opacity: 0;
     transition: visibility 0s 2s, opacity 2s linear;
   }
-  
 
- 
+  .nameField{
+    height: 12%;
+    width: 75%;
+    border: 1px solid #d0b17a;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    /* border-bottom-color: black; */
+  }  
+  
+  .login{
+    margin-top: 5%;
+    background: #977335;
+    color: white;
+    width: 75%;
+    height: 13%;
+    border: #977335;
+  }
+
+.texto{
+  color: #977335
+}
+
+p {
+  color: #977335
+}
+
+.ranking > div {
+  border: 1px solid black;
+}

@@ -12,24 +12,21 @@ let imgTF = 0;
 let imgTG = 0;
 let numberGrenades = 0;
 // velocidade
-let quick = 2500;
+let quick = 1600;
 let enemiesNumber = 0;
 
 function randomImg() {
-    let img = 0;
     let img2, topx, lefty;
     let num;
     let screenHeight, screenWidth;
-
+    
     screenHeight = window.innerHeight;
     screenWidth = window.innerWidth;
-
+    
     img2 = document.getElementsByClassName('ball');
-
+    
     for (let i = 0; i < img2.length; i++) {
         num = Math.floor(Math.random() * 200);
-        // img2[i].classList.toggle('enemies');
-
         if (num > 90) {
             img2[i].style.height = num + 'px';
             img2[i].style.width = num + 'px';
@@ -46,12 +43,12 @@ function randomImg() {
 function pontos(ene) {
     let points;
     let finalPoints;
-
+    
     if (ene.classList[1] === 'enemies') {
         ponto++;
     }
-
-
+    
+    
     points = document.getElementsByClassName('points');
     finalPoints = document.getElementsByClassName('pointsR');
     points[0].innerText = `Pontos: ${ponto}`;
@@ -106,15 +103,15 @@ function sumir(img) {
         img.style.height = '0px';
         // grenade();
         numberGrenades += 1;
-        console.log('total de granadas',numberGrenades);
+        console.log('total de granadas', numberGrenades);
 
     }
 
     img.style.width = '0px';
     img.style.height = '0px';
 
-    enemiesNumber+=1;
-    console.log('inimigos',enemiesNumber);
+    enemiesNumber += 1;
+    console.log('inimigos', enemiesNumber);
 }
 
 
@@ -130,7 +127,7 @@ function getPlayerStorage() {
     for (let i = 0; i < size; i += 1) {
         ranking.push(JSON.parse(localStorage.getItem(keys[i])));
     }
-    // console.log('values', ranking);
+    console.log('values', ranking);
 
 }
 
@@ -139,12 +136,26 @@ function endBoard() {
     pontos.remove();
     getPlayerStorage();
 
+
+    // let remove = document.getElementsByTagName('h1');
+    // remove[0].remove();
+
+    ranking.sort((a, b) => {
+        if (a.pontos > b.pontos) {
+            return -1;
+        }
+        if (a.pontos < b.pontos) {
+            return 1;
+        }
+        return 0;
+    })
+
     let endPoints = document.getElementById('ranking');
-    let father = endPoints.getElementsByTagName('h5')[0];
+    let father = endPoints.getElementsByTagName('h3')[0];
 
     for (let i = 0; i < ranking.length; i += 1) {
         let p = document.createElement('p');
-        let data = document.createTextNode(`Jogador: ${ranking[i].player}   -Pontos: ${ranking[i].pontos}`);
+        let data = document.createTextNode(`${i + 1} ${ranking[i].player} - Pontos: ${ranking[i].pontos}`);
         p.appendChild(data);
         father.appendChild(p);
     }
@@ -225,20 +236,22 @@ function timeout() {
 
     }
 
-
     setTimeout(function () {
         randomImg();
         checkBuff();
         timeout();
         enemiesNumber = 0;
-        console.log('inimigos mortos',enemiesNumber);
+        console.log('inimigos mortos', enemiesNumber);
     }, quick);
 
 }
-
+// checar se tem amigo na explosão, se tiver acabar o jogo. Checar pegando todos os elementos e 
+// checar se na classe do amigo tem a classe de esconder o elemento ou não
 function grenade() {
 
-    if (numberGrenades >= 1) {
+    let friends = document.getElementById('ball6');
+
+    if (numberGrenades >= 1 && friends.classList[1].length == 1) {
         numberGrenades -= 1;
 
         let updatePlayer = 5 - enemiesNumber;
@@ -257,8 +270,9 @@ function grenade() {
         // console.log('ponto', ponto);
 
         enemiesNumber = 0;
-    }else{
+    } else {
         console.log('sem granda');
+        end();
     }
 
 }
@@ -268,11 +282,18 @@ function main() {
     let boardpoints = document.getElementById('pointsboard');
     boardpoints.setAttribute('style', 'visibility:visible');
 
-    let remove = document.getElementsByTagName('h1');
-    remove[0].remove();
+    // let remove = document.getElementsByTagName('h1');
+    // remove[0].remove();
 
     timeout();
     times();
+
+    let imgAppear = document.getElementsByClassName('enemies');
+
+    for (let j = 0; j < 5; j += 1) {
+        imgAppear[j].style.opacity = 1;
+    }
+
 
     document.querySelectorAll('.ball').forEach(bal => {
         bal.addEventListener('click', function () {
