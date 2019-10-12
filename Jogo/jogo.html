@@ -8,23 +8,22 @@
 </head>
 
 <body>
-    <div id='pointsboard' class='pointsboards'>
+    <div id='pointsboard' class='pointsboards' style="display: inline-block">
         <p class="points">Pontos: 0</p>
         <p class="timer">Tempo Restante: 30s</p>
+    </div>
 
-        <img src="/img/grenadeExplosion.png" id='grenadeIcon' onclick="grenade()"
-            style="position: fixed; width: 150px; height: 100px; " class="grenade">
-
-
+    <div style="display: inline-block">
+        <img src="/img/grenadeExplosion.png" id='grenadeIcon' onclick="grenade()" class="grenade grenadeItem">
     </div>
 
     
     <div id="getName" class="GetNames" style="">
         <h1 class="texto" style="text-align: center;">Treine sua mira</h1>
-        <p class="texto">Dicas</p>
-        <p class="texto">A velocidade aumenta em relação aos pontos</p>
-        <p class="texto">Se acertar alguem do seu time o jogo acaba</p>
-        <p class="texto">Tem granada explosiva e de luz</p>
+        <p class="texto">Dicas:</p>
+        <p class="texto">- A velocidade aumenta em relação aos pontos</p>
+        <p class="texto">- Se acertar alguem do seu time o jogo acaba</p>
+        <p class="texto">- Tem granada explosiva e de luz</p>
         <input class="nameField" type="text" placeholder="Coloque seu apelido" name="TagName" id="tagName"></br>
         <button class="login" onclick="starts()">Começar</button>
     </div>
@@ -59,7 +58,7 @@
 
     <div id="ranking" class="ranking">
         <p class="pointsR">Seus pontos: </p>
-        <h3 class="texto">Ranking</h3>
+        <h3 class="texto" style="margin-bottom: 5px">Ranking</h3>
 
     </div>
 

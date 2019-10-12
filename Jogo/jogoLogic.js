@@ -12,7 +12,7 @@ let imgTF = 0;
 let imgTG = 0;
 let numberGrenades = 0;
 // velocidade
-let quick = 1600;
+let quick = 1300;
 let enemiesNumber = 0;
 
 function randomImg() {
@@ -26,13 +26,13 @@ function randomImg() {
     img2 = document.getElementsByClassName('ball');
     
     for (let i = 0; i < img2.length; i++) {
-        num = Math.floor(Math.random() * 200);
-        if (num > 90) {
+        num = Math.floor(Math.random() * 300);
+        if (num > 50) {
             img2[i].style.height = num + 'px';
             img2[i].style.width = num + 'px';
         }
-        topx = Math.floor(Math.random() * (screenHeight - num));
-        lefty = Math.floor(Math.random() * (screenWidth - num));
+        topx = Math.floor(Math.random() * (screenHeight - num-50));
+        lefty = Math.floor(Math.random() * (screenWidth - num-50));
 
         img2[i].style.top = topx + 'px';
         img2[i].style.left = lefty + 'px';
@@ -101,7 +101,6 @@ function sumir(img) {
     if (img.id === 'ball9') {
         img.style.width = '0px';
         img.style.height = '0px';
-        // grenade();
         numberGrenades += 1;
         console.log('total de granadas', numberGrenades);
 
@@ -111,7 +110,6 @@ function sumir(img) {
     img.style.height = '0px';
 
     enemiesNumber += 1;
-    console.log('inimigos', enemiesNumber);
 }
 
 
@@ -131,14 +129,22 @@ function getPlayerStorage() {
 
 }
 
+function insertAfter(el, referenceNode) {
+    referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
+}
+
 function endBoard() {
     let pontos = document.getElementById('pointsboard');
     pontos.remove();
+    let grenade = document.getElementById('grenadeIcon');
+    grenade.remove();
     getPlayerStorage();
 
 
     // let remove = document.getElementsByTagName('h1');
     // remove[0].remove();
+
+    console.table(ranking);
 
     ranking.sort((a, b) => {
         if (a.pontos > b.pontos) {
@@ -150,14 +156,20 @@ function endBoard() {
         return 0;
     })
 
+    console.log('ordenado');
+    console.table(ranking);
+
     let endPoints = document.getElementById('ranking');
     let father = endPoints.getElementsByTagName('h3')[0];
+    let place = ranking.length;
+
 
     for (let i = 0; i < ranking.length; i += 1) {
         let p = document.createElement('p');
-        let data = document.createTextNode(`${i + 1} ${ranking[i].player} - Pontos: ${ranking[i].pontos}`);
+        let data = document.createTextNode(`#${ranking.indexOf(ranking[i])} - ${ranking[i].player} - Pontos: ${ranking[i].pontos}`);
         p.appendChild(data);
-        father.appendChild(p);
+        endPoints.appendChild(p);
+        // insertAfter(p,father);
     }
 
     endPoints.setAttribute('style', 'visibility:visible');
@@ -193,7 +205,7 @@ function starts() {
 
 function checkBuff() {
     let imgf = document.getElementsByClassName('ball');
-    console.log('flash', imgTF);
+    // console.log('flash', imgTF);
     if (imgFF == 6) {
         imgf[5].classList.toggle('friend');
         setTimeout(function () { imgf[5].classList.toggle('friend'); }, 2000);
@@ -222,16 +234,16 @@ function timeout() {
 
     switch (ponto) {
         case 5:
-            quick = 1400;
+            quick = 1100;
             break;
         case 7:
-            quick = 1350;
+            quick = 1000;
             break;
         case 9:
-            quick = 1300;
+            quick = 900;
             break;
         case 11:
-            quick = 1250;
+            quick = 800;
             break;
 
     }
@@ -241,7 +253,7 @@ function timeout() {
         checkBuff();
         timeout();
         enemiesNumber = 0;
-        console.log('inimigos mortos', enemiesNumber);
+        // console.log('inimigos mortos', enemiesNumber);
     }, quick);
 
 }
@@ -249,9 +261,12 @@ function timeout() {
 // checar se na classe do amigo tem a classe de esconder o elemento ou não
 function grenade() {
 
-    let friends = document.getElementById('ball6');
+    let friends = document.getElementById('ball6'); 
 
-    if (numberGrenades >= 1 && friends.classList[1].length == 1) {
+    if (numberGrenades > 0 && friends.classList.length === 2) {
+        let audio = new Audio('/sounds/grenade.mp3');
+        audio.play();
+        
         numberGrenades -= 1;
 
         let updatePlayer = 5 - enemiesNumber;
@@ -263,6 +278,7 @@ function grenade() {
             enemiesImg[i].style.height = '0px';
         }
 
+        
         // console.log('ponto', ponto);
         // console.log('update', updatePlayer);
 
@@ -270,9 +286,10 @@ function grenade() {
         // console.log('ponto', ponto);
 
         enemiesNumber = 0;
+    } else if(friends.classList.length === 1) {
+        end();
     } else {
         console.log('sem granda');
-        end();
     }
 
 }
@@ -280,7 +297,9 @@ function grenade() {
 // lembrar de mudar velocidade para mais rápido
 function main() {
     let boardpoints = document.getElementById('pointsboard');
+    let grenadeItem = document.getElementsByClassName('grenadeItem');
     boardpoints.setAttribute('style', 'visibility:visible');
+    grenadeItem[0].setAttribute('style', 'visibility:visible');
 
     // let remove = document.getElementsByTagName('h1');
     // remove[0].remove();
@@ -299,6 +318,9 @@ function main() {
         bal.addEventListener('click', function () {
             sumir(this);
             pontos(this);
+ 
+            
+
             if (imgTG == 4) {
                 enemiesNumber += 1;
 
@@ -312,7 +334,13 @@ function main() {
     window.addEventListener('click', function (e) {
         if (document.getElementById('img').contains(e.target)) {
             console.log('dentro')
-        } else {
+            let shots = new Audio('/sounds/ak47-1.wav');
+            shots.play();
+        } else if(document.getElementById('grenadeIcon').contains(e.target)) {
+            console.log('Só granada')
+        } else{
+            let shots = new Audio('/sounds/ak47-1.wav');
+            shots.play();
             tiraPontos();
         }
     });

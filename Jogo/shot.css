@@ -79,7 +79,7 @@ body {
 
   .flashWhite {
     background: white; 
-    width: 99%; 
+    width: 100%; 
     height: 540px;
     color: white;
     position: absolute;
@@ -128,6 +128,17 @@ p {
   color: #977335
 }
 
-.ranking > div {
-  border: 1px solid black;
+.ranking > h3 > p {
+  border-bottom: 1px solid #977335;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  width: 100%;
+}
+
+.grenadeItem{
+  position: fixed; 
+  width: 150px; 
+  height: 100px; 
+  display: inline;
+  visibility: hidden;
 }
